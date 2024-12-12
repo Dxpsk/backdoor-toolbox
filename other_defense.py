@@ -83,6 +83,13 @@ if args.defense == 'NC':
         oracle=False,
     )
     defense.detect()
+    
+elif args.defense == 'BTIDBFU':
+    from other_defenses_tool_box.btidbfu import BTIDBFU
+    defense = BTIDBFU(
+        args,
+    )
+    
 elif args.defense == 'AC':
     from other_defenses_tool_box.activation_clustering import AC
     defense = AC(
