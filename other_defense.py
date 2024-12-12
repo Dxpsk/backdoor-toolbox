@@ -89,6 +89,7 @@ elif args.defense == 'BTIDBFU':
     defense = BTIDBFU(
         args,
     )
+    defense.detect()
     
 elif args.defense == 'AC':
     from other_defenses_tool_box.activation_clustering import AC

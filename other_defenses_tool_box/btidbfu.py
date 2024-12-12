@@ -84,6 +84,7 @@ class BTIDBFU(BackdoorDefense):
         self.ul_round = ul_round
         self.pur_round = pur_round
         self.pur_norm_bound = pur_norm_bound
+        self.earlystop = earlystop
         self.classifier = self.model.module.cuda()
         self.opt_cls = torch.optim.Adam(self.classifier.parameters(), lr = 1e-4)
         self.bd_gen = UNet(n_channels=3, num_classes=3, base_filter_num=32, num_blocks=4).cuda()
@@ -100,17 +101,19 @@ class BTIDBFU(BackdoorDefense):
             print("load pretrained bd_gen from:", save_path) 
         else:    
             self.pretrain_bd_gen()
+            
+    def detect(self):
         for n in range(self.nround):
             self.reverse(n) if n==0 else self.reverse(n, detected_label)
             if n ==0:
                 detected_label = self.get_target_label()
                 print("suspected label is:", detected_label)
-            elif earlystop:
+            elif self.earlystop:
                 checked_label = self.get_target_label()
                 if checked_label != detected_label:
                     break
             self.unlearn(n)
-            
+        
     
     def pretrain_bd_gen(self):
         preround = 50
